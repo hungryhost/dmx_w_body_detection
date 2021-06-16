@@ -1,7 +1,6 @@
 import body_decetor_yo as yo
 import cv2
-from DMXEnttecPro import Controller
-import imutils
+# from DMXEnttecPro import Controller
 
 # cap = yo.cv2.VideoCapture('humans_1.mp4')
 # cap = yo.cv2.VideoCapture('rtsp://172.18.191.159:554/12')
@@ -34,23 +33,26 @@ if __name__ == "__main__":
     # dmx = Controller('/dev/ttyUSB0')
     ret, frame = cap.read()
     xlist, ylist = drawGrid(frame, 4, 4)
+    framecounter = 0
     while True:
         ret, frame = cap.read()
-        image = yo.tf.expand_dims(frame, 0)
-        image = yo.tf.image.resize(image, (yo.size, yo.size)) / 255
+        if framecounter == 0:
+            image = yo.tf.expand_dims(frame, 0)
+            image = yo.tf.image.resize(image, (yo.size, yo.size)) / 255
 
-        boxes, scores, classes, nums = yo.yolo(image)
-        frame, xind, yind = yo.draw_outputs_v2(img=frame, outputs=(boxes, scores, classes, nums),
-                                               class_names=yo.class_names, white_list=['person'], xlist=xlist,
-                                               ylist=ylist)
-        frame = yo.draw_outputs(img=frame, outputs=(boxes, scores, classes, nums),
-                                class_names=yo.class_names, white_list=['person'])
+            boxes, scores, classes, nums = yo.yolo(image)
+            frame, xind, yind = yo.draw_outputs_v2(img=frame, outputs=(boxes, scores, classes, nums),
+                                                   class_names=yo.class_names, white_list=['person'], xlist=xlist,
+                                                   ylist=ylist)
+            frame = yo.draw_outputs(img=frame, outputs=(boxes, scores, classes, nums),
+                                    class_names=yo.class_names, white_list=['person'])
 
-        # dmx.set_channel(3, 100+xind+yind) # Sets DMX channel 1 to max 255
-        # dmx.submit()
-        #drawGrid(frame, 4, 4)
-        yo.cv2.imshow('frame', frame)
-        if yo.cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            # dmx.set_channel(3, 100+xind+yind) # Sets DMX channel 1 to max 255
+            # dmx.submit()
+            # drawGrid(frame, 4, 4)
+            yo.cv2.imshow('frame', frame)
+            if yo.cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        framecounter += 1
     cap.release()
     cv2.destroyAllWindows()

@@ -1,6 +1,5 @@
 import body_decetor_yo as yo
 import cv2
-import imutils
 
 # cap = yo.cv2.VideoCapture('humans_1.mp4')
 # cap = yo.cv2.VideoCapture('rtsp://172.18.191.159:554/12')
